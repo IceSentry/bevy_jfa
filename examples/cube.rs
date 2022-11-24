@@ -1,7 +1,4 @@
-use bevy::{
-    input::{keyboard::KeyboardInput, ButtonState},
-    prelude::*,
-};
+use bevy::prelude::*;
 use bevy_jfa::{CameraOutline, Outline, OutlinePlugin, OutlineSettings, OutlineStyle};
 
 #[derive(Clone, Debug, Component)]
@@ -60,8 +57,8 @@ fn setup(
         .insert(CameraOutline {
             enabled: true,
             style: outline_styles.add(OutlineStyle {
-                color: Color::hex("b4a2c8").unwrap(),
-                width: 33.0,
+                color: Color::GREEN,
+                width: 10.0,
             }),
         });
 
@@ -86,12 +83,10 @@ fn rotate_cube(time: Res<Time>, mut query: Query<(&mut Transform, &RotationAxis)
     }
 }
 
-fn handle_keys(mut settings: ResMut<OutlineSettings>, mut keys: EventReader<KeyboardInput>) {
-    for ev in keys.iter() {
-        if ev.key_code == Some(KeyCode::R) && ev.state == ButtonState::Pressed {
-            let old = settings.half_resolution();
-            settings.set_half_resolution(!old);
-        }
+fn handle_keys(mut settings: ResMut<OutlineSettings>, keyboard_input: Res<Input<KeyCode>>) {
+    if keyboard_input.just_pressed(KeyCode::R) {
+        let old = settings.half_resolution();
+        settings.set_half_resolution(!old);
     }
 }
 

@@ -26,7 +26,7 @@ use bevy::{
     ecs::{prelude::*, system::SystemParamItem},
     pbr::{DrawMesh, MeshPipelineKey, MeshUniform, SetMeshBindGroup, SetMeshViewBindGroup},
     prelude::{AddAsset, Camera3d},
-    reflect::TypeUuid,
+    reflect::{Reflect, ReflectDeserialize, ReflectSerialize, TypeUuid},
     render::{
         extract_component::{ExtractComponent, ExtractComponentPlugin},
         extract_resource::ExtractResource,
@@ -39,7 +39,7 @@ use bevy::{
         },
         render_resource::*,
         renderer::{RenderDevice, RenderQueue},
-        view::{ExtractedView, VisibleEntities},
+        view::{ExtractedView, ViewTarget, VisibleEntities},
         Extract, RenderApp, RenderStage,
     },
     utils::FloatOrd,
@@ -119,7 +119,9 @@ impl Plugin for OutlinePlugin {
     fn build(&self, app: &mut App) {
         app.add_plugin(RenderAssetPlugin::<OutlineStyle>::default())
             .add_asset::<OutlineStyle>()
-            .init_resource::<OutlineSettings>();
+            .init_resource::<OutlineSettings>()
+            .register_type::<Outline>()
+            .register_type::<CameraOutline>();
 
         let mut shaders = app.world.get_resource_mut::<Assets<Shader>>().unwrap();
 
@@ -269,14 +271,16 @@ impl RenderAsset for OutlineStyle {
 }
 
 /// Component for enabling outlines when rendering with a given camera.
-#[derive(Clone, Debug, PartialEq, Component)]
+#[derive(Clone, Debug, PartialEq, Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct CameraOutline {
     pub enabled: bool,
     pub style: Handle<OutlineStyle>,
 }
 
 /// Component for entities that should be outlined.
-#[derive(Clone, Debug, PartialEq, Component)]
+#[derive(Clone, Debug, PartialEq, Component, Default, Reflect)]
+#[reflect(Component)]
 pub struct Outline {
     pub enabled: bool,
 }
