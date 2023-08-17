@@ -204,9 +204,8 @@ impl Node for OutlineNode {
         let view_entity = graph.get_input_entity(Self::IN_VIEW)?;
         graph.set_output(Self::OUT_VIEW, view_entity)?;
 
-        let (view_target, outline) = match self.query.get_manual(world, view_entity) {
-            Ok(result) => result,
-            Err(_) => return Ok(()),
+        let Ok((view_target, outline)) = self.query.get_manual(world, view_entity) else {
+            return Ok(());
         };
 
         let styles = world.resource::<RenderAssets<OutlineStyle>>();
@@ -215,9 +214,8 @@ impl Node for OutlineNode {
         let res = world.get_resource::<OutlineResources>().unwrap();
 
         let pipelines = world.get_resource::<PipelineCache>().unwrap();
-        let pipeline = match pipelines.get_render_pipeline(self.pipeline_id) {
-            Some(p) => p,
-            None => return Ok(()),
+        let Some(pipeline) = pipelines.get_render_pipeline(self.pipeline_id) else {
+            return Ok(());
         };
 
         let render_pass = render_context

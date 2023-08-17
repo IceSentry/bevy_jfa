@@ -143,9 +143,8 @@ impl Plugin for OutlinePlugin {
 
         app.add_plugin(ExtractComponentPlugin::<Outline>::default());
 
-        let render_app = match app.get_sub_app_mut(RenderApp) {
-            Ok(r) => r,
-            Err(_) => return,
+        let Ok(render_app) = app.get_sub_app_mut(RenderApp) else {
+            return;
         };
 
         render_app

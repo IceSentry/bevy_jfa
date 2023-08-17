@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_egui::{egui, EguiContext, EguiPlugin};
 use bevy_jfa::{CameraOutline, Outline, OutlinePlugin, OutlineSettings, OutlineStyle};
 
 #[derive(Clone, Debug, Component)]
@@ -94,8 +95,16 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugin(OutlinePlugin)
+        .add_plugin(EguiPlugin)
         .add_startup_system(setup)
         .add_system(rotate_cube)
         .add_system(handle_keys)
+        .add_system(ui_example)
         .run();
+}
+
+fn ui_example(mut egui_context: ResMut<EguiContext>) {
+    egui::Window::new("Hello").show(egui_context.ctx_mut(), |ui| {
+        ui.label("world");
+    });
 }

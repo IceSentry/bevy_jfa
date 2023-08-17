@@ -33,3 +33,6 @@ features = [
 
 [profile.dev]
 opt-level = 3
+
+[dev-dependencies]
+bevy_egui = "0.16.0"
